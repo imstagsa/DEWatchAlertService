@@ -1,0 +1,66 @@
+watchalert.elastichost: 192.168.11.201
+watchalert.elasticport: 9200
+
+watchalert.task1.indice: /kanematsu-%YEAR%.%MONTH%/_count?pretty
+watchalert.task1.querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}}}
+watchalert.task1.period: 300
+watchalert.task1.timeZoneDiff: 5
+watchalert.task1.fields: count
+watchalert.task1.lt: 10
+watchalert.task1.action.httplink: https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4693&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%
+watchalert.task1.action.httpbody: Do not received any logs from Kanematsu PaloAlto device. Call Evghenii 929-202-1178.
+
+watchalert.task2.indice: /chp-syslog-%YEAR%.%MONTH%/_count?pretty
+watchalert.task2.querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}}}
+watchalert.task2.period: 300
+watchalert.task2.timeZoneDiff: 4
+watchalert.task2.fields: count
+watchalert.task2.lt: 10
+watchalert.task2.action.httplink: https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4631&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%
+watchalert.task2.action.httpbody: Do not received any logs from CHP Watchguard device. Call Evghenii 929-202-1178.
+
+watchalert.task3.indice: /chp-winlogbeat-%YEAR%.%MONTH%/_count?pretty
+watchalert.task3.querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}}}
+watchalert.task3.period: 300
+watchalert.task3.timeZoneDiff: 4
+watchalert.task3.fields: count
+watchalert.task3.lt: 10
+watchalert.task3.action.httplink: https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4631&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%
+watchalert.task3.action.httpbody: Do not received any logs from CHP AD servers. Call Evghenii 929-202-1178.
+
+watchalert.task4.indice: /rumc-collectd-%YEAR%.%MONTH%/_count?pretty
+watchalert.task4.querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}}}
+watchalert.task4.period: 300
+watchalert.task4.timeZoneDiff: 4
+watchalert.task4.fields: count
+watchalert.task4.lt: 10
+watchalert.task4.action.httplink: https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4631&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%
+watchalert.task4.action.httpbody: Do not received any SNMP data from RUMC network devices. Call Evghenii 929-202-1178.
+
+watchalert.task5.indice: /rumc-syslog-%YEAR%.%MONTH%/_count?pretty
+watchalert.task5.querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}}}
+watchalert.task5.period: 300
+watchalert.task5.timeZoneDiff: 4
+watchalert.task5.fields: count
+watchalert.task5.lt: 10
+watchalert.task5.action.httplink: https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4631&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%
+watchalert.task5.action.httpbody: Do not received any logs from RUMC network devices. Call Evghenii 929-202-1178.
+
+watchalert.task6.indice: /auriga-collectd-%YEAR%.%MONTH%/_count?pretty
+watchalert.task6.querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}}}
+watchalert.task6.period: 300
+watchalert.task6.timeZoneDiff: 4
+watchalert.task6.fields: count
+watchalert.task6.lt: 10
+watchalert.task6.action.httplink: https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4631&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%
+watchalert.task6.action.httpbody: Do not received any SNMP data from AURIGA Fortigate device. Call Evghenii 929-202-1178.
+
+watchalert.task7.indice: /auriga-fortigate-%YEAR%.%MONTH%/_count?pretty
+watchalert.task7.querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}}}
+watchalert.task7.period: 300
+watchalert.task7.timeZoneDiff: 4
+watchalert.task7.fields: count
+watchalert.task7.lt: 10
+watchalert.task7.action.httplink: https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4631&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%
+watchalert.task7.action.httpbody: Do not received any SYSLOG data from AURIGA Fortigate device. Call Evghenii 929-202-1178.
+

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DEWatchAlertService" default="DEWatchAlertService" basedir="."> 
+  <property name="HelloText" value="Hello"/>
+  <target name="Hello">
+    <echo>${HelloText}</echo>
+  </target>
+  
+  <target name="clean">
+        <delete dir="build"/>
+  </target>
+
+	<path id="classpath">
+        <fileset dir="${lib.dir}" includes="lib/*.jar"/>
+    </path>
+  <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes" includeantruntime="false">
+        	<classpath>
+        		<path id="javamail" location="lib/javax.mail-1.5.1.jar"/>
+        		<path id="activation" location="lib/activation-1.1.jar"/>
+    		</classpath>
+    	</javac>	
+  </target>
+  
+  <property name="jar.class.path" value="lib/javax.mail-1.5.1.jar lib/activation-1.1.jar"/>
+    
+  <target name="jar">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/DEWatchAlertService.jar" basedir="build/classes">
+        <zipgroupfileset dir="lib" includes="*.jar" excludes=""/>
+            <manifest>
+                <attribute name="Main-Class" value="net.digitaledge.watchalert.WatchalertService"/>
+            </manifest>
+        </jar>
+    </target>
+  
+</project>
