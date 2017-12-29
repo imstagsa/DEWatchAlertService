@@ -1,0 +1,27 @@
+watchalert.elastichost: 192.168.19.174
+watchalert.elasticport: 9200
+
+watchalert.task1.indice: /nrx-dc-%YEAR%.%MONTH%/_search?pretty
+watchalert.task1.querybody: {"query":{"bool":{"must":[{"match":{"event_id":"5136"}},{"range":{"@timestamp":{"gte":"2017-12-28T18:13:08.067Z"}}}]}}}
+watchalert.task1.period: 30
+watchalert.task1.timeZoneDiff: 5
+watchalert.task1.fields: message
+watchalert.task1.keywords: Security
+watchalert.task1.replaceFields: 'ObjectDN:OBJECTDN SubjectUserName:USERID message:MESSAGE @timestamp:LOGTIME'
+watchalert.task1.action.smtpserver: 192.168.17.8:25
+watchalert.task1.action.smtpfrom: AzureAD-audit-report@numerix.com
+watchalert.task1.action.recipients: to:esimacenco@digitaledge.net cc:nlavnevich@digitaledge.net
+watchalert.task1.action.smtpsubject: ELK Alert, An event "AD object was modified" was detected
+watchalert.task1.action.smtpbody:'<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<html>
+<body lang=EN-US link=blue vlink=purple>
+<div>
+<p>from Numerix</p>
+<p>EventID 5136: A directory service object was modified</p>
+<p>Date: %LOGTIME%</p>
+<p>User ID: %USERID%</p>
+<p>Message: %MESSAGE%</p>
+</div>
+</body>
+</html>'
+
