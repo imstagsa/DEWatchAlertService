@@ -14,8 +14,8 @@ Common options:
 
 TASK Required configuration for each task:	
 	watchalert.taskX.indice - for example: '/paloalto_logs-2017.01/_search?pretty'.
-	watchalert.taskX.querybody - JOSN query: Example:'{"fields":["message"],"query":{"term":{"GenerateTime":"2017/01/10 16:56:32"}}}'.
-	watchalert.taskX.period - checking period in seconds, for example 10.
+	watchalert.taskX.querybody - JOSN query: Example:'{"query":{"term":{"GenerateTime":"2017/01/10 16:56:32"}}}'.
+	watchalert.taskX.period - Defining how often this task will be executing. For example 10 means every 10 seconds. 
 	watchalert.taskX.fields - search keywords in fields. The list must be separated by space.
 	The task must has either watchalert.taskX.keywords or watchalert.taskX.gt or watchalert.taskX.lt option. 
 Additional options for each task:
@@ -49,5 +49,5 @@ Reserved passphrases.
 	%HOST% - existing host ID in EMS.
 	%EPOCHTIME% - Gets the number of seconds from the Java epoch of 1970-01-01T00:00:00Z.
 	%TIMESTAMP% - in format  yyyy-MM-ddTHH:mm:ss.SSSZ.
-	%TIMESTAMP-PERIOD% - Current datetime minus period.Format yyyy-MM-ddTHH:mm:ss.SSSZ.
+	%TIMESTAMP-PERIOD% - replacing by current datetime minus time defined in watchalert.taskX.period. Default format yyyy-MM-ddTHH:mm:ss.SSSZ.
 	 

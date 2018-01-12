@@ -53,7 +53,6 @@ public class WatchAlertTask {
 		
 	}
 
-
 	public String getIndice() {
 		return indice;
 	}
@@ -162,7 +161,6 @@ public class WatchAlertTask {
 	public void setTimeZoneDiff(Integer timeZoneDiff) {
 		this.timeZoneDiff = timeZoneDiff;
 	}
-	
 	
 	public String getEmailFlag() {
 		return emailFlag;

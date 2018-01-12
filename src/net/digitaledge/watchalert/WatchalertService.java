@@ -1,30 +1,31 @@
 package net.digitaledge.watchalert;
 
+import java.util.logging.Logger;
 
 public class WatchalertService  {
 
 	private Thread thread;
 	private WatchAlertSettings settings;
+	final static Logger logger = Logger.getLogger("WatchalertService");
+	
 	public static void main(String[] args)
 	{
-		
 		WatchalertService watchalertService = new WatchalertService();
 		watchalertService.doStart();
 	}
 	
     public WatchalertService() {
     	settings = new WatchAlertSettings();
-    	doStart();
     }
 
     protected void doStart() {
     	try{
-    		System.out.println("START watchalertService.");
+    		logger.info("START watchalertService.");
     		WatchAlertsWorker worker = new WatchAlertsWorker(settings);
-    		System.out.println("watchalertService  starting.");
+    		logger.info("watchalertService  starting.");
     		thread = new Thread(worker);
     		thread.start();
-    		System.out.println("watchalertService started.");
+    		logger.info("watchalertService started.");
     	} catch (Exception e) {System.out.println(e.toString());}
     }
 }

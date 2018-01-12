@@ -12,9 +12,20 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.*;
-import javax.mail.*;
-import javax.mail.internet.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
+
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class WatchAlertsWorker implements Runnable {
 
@@ -23,19 +34,15 @@ public class WatchAlertsWorker implements Runnable {
 	private String enableDebug = new String("false");
 	
 	private int arrayList = 0, key = 0;
-	//private Integer retriveLogs = new Integer(0);
 	private Integer maxTasks = new Integer(20);
-	//private ESSystem.out.println System.out.println;
-	//private String debug = new String("false");
 	private WatchAlertTask[] watchAlertTaskList = new WatchAlertTask[maxTasks];
 	private Boolean jsonStrated = false, parseValue = false;
+	//private static Logger LOGGER = Logger.getLogger("InfoLogging");
+	
 	
 	public WatchAlertsWorker(WatchAlertSettings settings)
 	{
-		//this.System.out.println = System.out.println;
-		//this.System.out.println.debug("WatchAlertsWorker  created");
 		parseConfig(settings);
-		//this.System.out.println.debug("Executed  parseConfig");
 	}
 
 	/**
@@ -44,7 +51,6 @@ public class WatchAlertsWorker implements Runnable {
 	 */
 	private void parseConfig(WatchAlertSettings settings)
 	{
-		//System.out.println.debug("Executing  parseConfig...");
 		try{	
 			
 			if(settings.get("watchalert.elastichost") != null)
@@ -144,7 +150,7 @@ public class WatchAlertsWorker implements Runnable {
 	private void printConfig(WatchAlertTask watchAlertTask, int index)
 	{
 		try{
-			System.out.println("--------------------------------------------------------------");
+			System.out.println("---------------------START CONFIG----------------------------------------");
 			//System.out.println.info("Found task " + index);
 			System.out.println("Elastic Host: " + elasticHost);
 			System.out.println("Elastic Port: " + elasticPort);
@@ -169,8 +175,14 @@ public class WatchAlertsWorker implements Runnable {
 				//System.out.println.info("Task recipients: " + watchAlertTask.getsm);
 				System.out.println("Task SMTP Subject: " + watchAlertTask.getSmtpSubject());
 				System.out.println("Task SMTP Body: " + watchAlertTask.getSmtpBody());
-			}		
+			}
 			
+			watchAlertTask.getFields().forEach(action -> System.out.println("Task field: " + action));
+			watchAlertTask.getKeywords().forEach(action -> System.out.println("Task keyword: " + action));
+			watchAlertTask.getRecipients().forEach(action -> System.out.println("Task recipient: " + action));
+			watchAlertTask.getReplaceFields().forEach(action -> System.out.println("Task replace field: " +  action.getField() + " with pattern: " + action.getPattern()));
+			
+			System.out.println("-------------------END CONFIG------------------------------------------");
     	} catch (Exception e) {
     		System.out.println(e.toString());
 		} 
@@ -208,15 +220,21 @@ public class WatchAlertsWorker implements Runnable {
 	public void sendEmailWithoutAuth(final WatchAlertTask watchAlertTask, String alertBody, List<MapVariableValue> nodes)
 	{
 		try{
+			System.out.println("BEFORE SENDING EMAIL");
 			String[] stringArray = watchAlertTask.getSmtpServer().split(":");
 			String smtpServer = stringArray[0];
 			String smtpPort = new String("25");
+			String alertMessage = new String();
 			if(stringArray.length == 2)
 				smtpPort = stringArray[1];			 	 
-			
-			String alertMessage = replaceKeywords(watchAlertTask.getSmtpBody(),watchAlertTask, nodes);
-			alertMessage = alertMessage.replaceAll("%MESSAGE%", alertBody);
-		
+			//try{
+				alertMessage = replaceKeywords(watchAlertTask.getSmtpBody(),watchAlertTask, nodes);
+				alertMessage = alertMessage.replaceAll("%MESSAGE%", alertBody);
+			//}
+			//catch(Exception e)
+			//{
+				//System.out.println(e.toString());
+			//}
 			Properties props = System.getProperties();
 			props.put("mail.smtp.host", smtpServer);
 			if (enableDebug.equals("true")) props.put("mail.debug", "true");
@@ -251,8 +269,9 @@ public class WatchAlertsWorker implements Runnable {
 			transport.connect();
 			transport.sendMessage(msg, msg.getAllRecipients());
 			transport.close();
+			System.out.println("AFTER SENDING EMAIL");
 		}catch (MessagingException mex) {
-			mex.printStackTrace();
+			System.out.println(mex.toString());
 		}
 	}
 	
@@ -356,8 +375,21 @@ public class WatchAlertsWorker implements Runnable {
 						{
 							if(replaceFields.getField().toLowerCase().equals(nodes.get(i).getVariable().toLowerCase()))
 							{
-								str = str.replaceAll("%"+replaceFields.getPattern()+"%", nodes.get(i).getValue());
-								System.out.println("Found replacement field:" + nodes.get(i).getValue() + " with pattern: " + replaceFields.getPattern());
+								try 
+								{
+									//System.out.println(nodes.get(i).getValue());
+									if(nodes.get(i).getValue().contains("$"))
+									{
+										//System.out.println("Found wrong value" + nodes.get(i).getValue());
+										nodes.get(i).setValue(((String)nodes.get(i).getValue()).replaceAll("\\$", ""));
+										//System.out.println("Replased wrong value" + nodes.get(i).getValue());
+									}
+									str = str.replaceAll("%"+replaceFields.getPattern()+"%", nodes.get(i).getValue());
+									System.out.println("Found replacement field:" + nodes.get(i).getValue() + " with pattern: " + replaceFields.getPattern());
+								}
+								catch(Exception e) {
+									System.out.println(e.toString());
+								}
 							}
 						}
 					}
@@ -443,7 +475,7 @@ public class WatchAlertsWorker implements Runnable {
 			while((t = br.readLine()) != null)
 			{			
 				String str = t.trim();
-				System.out.println("Line " + str);
+				//System.out.println("Line " + str);
 				parseLine(str, receivedNodes);
 				
 				if(jsonStrated && arrayList <= 0)
@@ -457,18 +489,27 @@ public class WatchAlertsWorker implements Runnable {
 			br.close();
 			if(socket.isConnected())
 				socket.close();
-			System.out.println("nodes.size(): " + receivedNodes.size());
+			//System.out.println("nodes.size(): " + receivedNodes.size());
 			
 			MapAlertStrings mapAlertStrings = new MapAlertStrings();
+			Boolean ifAggregationStarted = false;
 			
 			for(int i = 0; i< receivedNodes.size(); i++)
 			{
-				System.out.println("Node key: " + i + "  Variable: " + receivedNodes.get(i).getVariable() + "  value: " + receivedNodes.get(i).getValue());
+				//System.out.println("Node key: " + i + "  Variable: " + receivedNodes.get(i).getVariable() + "  value: " + receivedNodes.get(i).getValue());
 				if(receivedNodes.get(i).getVariable() != null)
 				{
-					if(receivedNodes.get(i).getVariable().equals("_index") && mapAlertStrings.getAlertString().length() > 0)
+					
+					if(receivedNodes.get(i).getVariable().equals("buckets"))
+					{
+						ifAggregationStarted = true;
+						System.out.println("ifAggregationStarted = TRUE");
+					}
+					
+					if((receivedNodes.get(i).getVariable().equals("_index")|| ifAggregationStarted ) && mapAlertStrings.getAlertString().length() > 0 )
 					{
 						taskNodes.add(mapAlertStrings);
+						System.out.println("Added alert task");
 						mapAlertStrings = new MapAlertStrings();
 					}
 					
@@ -514,15 +555,18 @@ public class WatchAlertsWorker implements Runnable {
 			
 			//Adding last alert
 			if(mapAlertStrings.getAlertString().length() > 0)
+			{
 				taskNodes.add(mapAlertStrings);
+				System.out.println("Added last alert task");
+			}
 			
 			System.out.println("activeAlert length: " + taskNodes.size());
 			for(MapAlertStrings alertBody : taskNodes)
 			{
 				System.out.println("----------------------------------------------------------------");
 				System.out.println("ALERT: " + alertBody.getAlertString());
-				for(MapVariableValue mapVariableValue : alertBody.getAlertMapStrings())
-					System.out.println(mapVariableValue.getVariable() + ": " + mapVariableValue.getValue());
+				//for(MapVariableValue mapVariableValue : alertBody.getAlertMapStrings())
+					//System.out.println("mapVariableValue: " + mapVariableValue.getVariable() + ": " + mapVariableValue.getValue());
 				
 				
 				System.out.println("watchAlertTask.getEmailFlag(): " + watchAlertTask.getEmailFlag());
@@ -653,9 +697,9 @@ public class WatchAlertsWorker implements Runnable {
 	
 	public void parseLine(String line, HashMap<Integer, MapVariableValue> nodes)
 	{
-		System.out.println("Nodes size:" + nodes.size());
+		//System.out.println("Nodes size:" + nodes.size());
 		String str = line.trim();
-		System.out.println(str);
+		//System.out.println(str);
 		for (int y=0; y<str.length(); y++)
 		{
 			if(str.charAt(y) == '{')
