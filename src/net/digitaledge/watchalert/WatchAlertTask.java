@@ -5,12 +5,14 @@ import java.util.List;
 
 public class WatchAlertTask {
 
+	private Integer taskNumber; 
 	private String httpLink; 
 	private String indice;
 	private String querybody;
 	private String timeformat;
 	private Integer period;
 	private String campareFlag;
+	private String procedure;
 	private String httpBody;
 	private Integer greaterThan;
 	private Integer lessThan;
@@ -24,12 +26,13 @@ public class WatchAlertTask {
 	private List<String> recipients;
 	private List<String> keywords;
 	private List<String> fields;
-	private List<WatchAlertReplaceFields> replaceFields;
+	private List<MapVariableValue> replaceFields;
 
 	private Long nextExecuteTime = new Long(0);
 	
-	public WatchAlertTask()
+	public WatchAlertTask(Integer number)
 	{
+		this.taskNumber = number;
 		this.indice = new String();
 		this.querybody = new String();
 		this.period = 10;
@@ -37,6 +40,7 @@ public class WatchAlertTask {
 		this.lessThan = 0;
 		this.timeZoneDiff = 0;
 		this.campareFlag = new String("NO_COMPARE");
+		this.procedure = new String();
 		this.keywords = new ArrayList<String>();
 		this.fields = new ArrayList<String>();
 		this.timeformat = new String("");
@@ -49,10 +53,14 @@ public class WatchAlertTask {
 		this.smtpSubject = new String();
 		this.smtpBody = new String();
 		this.recipients = new ArrayList<String>();
-		this.replaceFields = new ArrayList<WatchAlertReplaceFields>();
+		this.replaceFields = new ArrayList<MapVariableValue>();
 		
 	}
 
+	public Integer getTaskNumber() {
+		return taskNumber;
+	}
+	
 	public String getIndice() {
 		return indice;
 	}
@@ -219,8 +227,16 @@ public class WatchAlertTask {
 		for(int i=0; i < stringArray.length; i++)
 			this.recipients.add(stringArray[i]);
 	}
+
+	public String getProcedure() {
+		return procedure;
+	}
+
+	public void setProcedure(String procedure) {
+		this.procedure = procedure;
+	}
 	
-	public List<WatchAlertReplaceFields> getReplaceFields() {
+	public List<MapVariableValue> getReplaceFields() {
 		return replaceFields;
 	}
 
@@ -232,9 +248,9 @@ public class WatchAlertTask {
 				String[] stringArray2 = stringArray[y].split(":");
 				if(stringArray2.length == 2)
 				{
-					WatchAlertReplaceFields watchAlertReplaceFields = new WatchAlertReplaceFields();
-					watchAlertReplaceFields.setField(stringArray2[0]);
-					watchAlertReplaceFields.setPattern(stringArray2[1]);
+					MapVariableValue watchAlertReplaceFields = new MapVariableValue();
+					watchAlertReplaceFields.setValue(stringArray2[0]);
+					watchAlertReplaceFields.setVariable(stringArray2[1]);
 					this.replaceFields.add(watchAlertReplaceFields);
 				}
 			}

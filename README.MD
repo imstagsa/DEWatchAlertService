@@ -21,7 +21,7 @@ TASK Required configuration for each task:
 Additional options for each task:
 	watchalert.taskX.keywords - List of words separated by space which will try to find in query results. For example: fail error auth.
 	watchalert.taskX.timeformat - Time format. Default "yyyy/MM/dd HH:mm:ss".
-	watchalert.taskX.value_string - reserved for future use.
+	watchalert.taskX.procedure - reserved for future use.
 	watchalert.taskX.gt - greater than. If this option is configured then plugin will try  convert value in specific fields to double and will compare it with value in this option.   
 	watchalert.taskX.lt - less than. If this option is configured then plugin will try convert value in specific fields to double and will compare it with value in this option. It received value is less than expected then an alert event will fired.
 	watchalert.taskX.timeZoneDiff - time zone difference in hours. Can be positive or negative. 

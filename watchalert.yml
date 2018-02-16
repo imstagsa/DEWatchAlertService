@@ -1,23 +1,23 @@
 watchalert.elastichost: 192.168.19.174
 watchalert.elasticport: 9200
 
-watchalert.task1.indice: /nrx-dc-2017.12/_search?pretty
-watchalert.task1.querybody: '{"query":{"bool":{"must":[{"match":{"event_id":"4625"}},{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}},"aggs": {"username": { "terms": { "field": "event_data.TargetUserName", "size": 15}}}}'
-watchalert.task1.period: 300
-watchalert.task1.replaceFields: 'key:OBJECTDN doc_count:ATTEMPTS'
-#watchalert.task1.timeZoneDiff: 5
-watchalert.task1.fields: doc_count
-watchalert.task1.timeOff: 2
-watchalert.task1.gt: 4
-watchalert.task1.action.smtpserver: mailout.numerix.com:25
-watchalert.task1.action.smtpfrom: AzureAD-audit-report@numerix.com
-watchalert.task1.action.recipients: to:esimacenco@digitaledge.net
-watchalert.task1.action.smtpsubject: LogIT Alerts, Numerix
+watchalert.task1.indice: /nrx-azure-signin*/_search?pretty
+watchalert.task1.querybody: '{"query":{"bool":{"must":[{"exists":{"field":"signinDateTime"}},{"range":{"signinDateTime":{"gte": "2018-02-14T12:00:38.167Z"}}}]}},"aggs": {"userPrincipalName":{ "terms": {"field": "userPrincipalName" }, "aggs" :{"location": { "terms": {"field": "city" }}}}}}'
+watchalert.task1.period: 30
+watchalert.task1.timeZoneDiff: -24
+watchalert.task1.procedure: numerixGetUserLoginsLocations
+watchalert.task1.replaceFields: 'user:OBJECTDN ATTEMPTS:ATTEMPTS'
+watchalert.task1.action.smtpserver: mc2.digitaledge.net:25
+watchalert.task1.action.smtpfrom: supportteam2asdad@digitaledge.net
+watchalert.task1.action.recipients: to:esimacenco@digitaledge.net cc:nlavnevich@DIGITALEDGE.NET
+watchalert.task1.action.smtpsubject: ELK Alerts, User signed in from different city
 watchalert.task1.action.smtpbody: '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <html>
 <body lang=EN-US link=blue vlink=purple>
 <div>
-<p>Bad logins, %OBJECTDN%. Login attempts: %ATTEMPTS%</p>
+<p>User signed in from different city</p>
+<p>Username: %MESSAGE%.</p> 
+<p>List of cities: %ATTEMPTS%</p>
 </div>
 </body>
 </html>'

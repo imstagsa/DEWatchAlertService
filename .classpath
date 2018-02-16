@@ -5,5 +5,9 @@
 	<classpathentry kind="lib" path="C:/dev/eclipse/workspace/DEWatchAlertService/lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="C:/dev/eclipse/workspace/DEWatchAlertService/lib/javax.mail-1.5.1.jar"/>
 	<classpathentry kind="lib" path="C:/dev/eclipse/workspace/DEWatchAlertService/lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/json-20171018.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple-1.1-bundle.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple-1.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

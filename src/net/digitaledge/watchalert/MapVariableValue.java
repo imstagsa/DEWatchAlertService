@@ -7,10 +7,22 @@ public class MapVariableValue {
 	
 	public MapVariableValue(String variable)
 	{
-		this.variable = new String(variable);
+		this.variable = variable;
 		this.value = new String();
 	}
 
+	public MapVariableValue(String variable, String value)
+	{
+		this.variable = variable;
+		this.value = value;
+	}
+	
+	public MapVariableValue()
+	{
+		this.variable = new String();
+		this.value = new String();
+	}
+	
 	public String getValue() {
 		return value;
 	}

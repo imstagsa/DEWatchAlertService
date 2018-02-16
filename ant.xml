@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="DEWatchAlertService" default="DEWatchAlertService" basedir="."> 
+<project name="DEWatchAlertService" default="jar" basedir="."> 
   <property name="HelloText" value="Hello"/>
   <target name="Hello">
     <echo>${HelloText}</echo>

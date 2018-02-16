@@ -15,7 +15,7 @@ public class WatchalertService  {
 	}
 	
     public WatchalertService() {
-    	settings = new WatchAlertSettings();
+    	
     }
 
     protected void doStart() {
