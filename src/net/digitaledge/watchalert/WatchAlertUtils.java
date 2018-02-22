@@ -47,7 +47,7 @@ public class WatchAlertUtils {
 		return  df.format(today);
 	}
 
-	public static String replaceKeywords(String str, WatchAlertTask watchAlertTask, List<MapVariableValue> nodes)
+	public static String replaceKeywords(String str, WatchAlertTask watchAlertTask, WatchAlertTaskQuery watchAlertTaskQuery, List<MapVariableValue> nodes)
 	{
 		try{
 			
@@ -75,19 +75,14 @@ public class WatchAlertUtils {
 				{
 					if(nodes.get(i).getVariable() != null)
 					{
-						for(MapVariableValue replaceFields: watchAlertTask.getReplaceFields())
+						for(MapVariableValue replaceFields: watchAlertTaskQuery.getReplaceFields())
 						{
 							if(replaceFields.getValue().toLowerCase().equals(nodes.get(i).getVariable().toLowerCase()))
 							{
 								try 
 								{
-									//System.out.println(nodes.get(i).getValue());
 									if(nodes.get(i).getValue().contains("$"))
-									{
-										//System.out.println("Found wrong value" + nodes.get(i).getValue());
 										nodes.get(i).setValue(((String)nodes.get(i).getValue()).replaceAll("\\$", ""));
-										//System.out.println("Replased wrong value" + nodes.get(i).getValue());
-									}
 									str = str.replaceAll("%"+replaceFields.getVariable()+"%", nodes.get(i).getValue());
 									System.out.println("Found replacement field:" + nodes.get(i).getValue() + " with pattern: " + replaceFields.getVariable());
 								}

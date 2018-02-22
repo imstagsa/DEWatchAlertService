@@ -16,27 +16,6 @@ public class WatchAlertSettings {
 	{
 		if(readFile("watchalert.yml") == null)
 			System.exit(0);
-		 
-		 //List<String> mappedList  = records.stream().map(emp -> emp.split(":")[0]).collect(toList());	 
-		 //for(String map: mappedList)
-		 //	 System.out.println(map);
-/*		 for(String record : records)
-		 {
-			 if(record.startsWith("watchalert"))
-			 {
-				 System.out.println(record);
-				 String key = record.split(":")[0];
-				 String value = new String();
-				 if(record.split(":")[0].length() > 2)
-					 value = record.replaceFirst(key+":", "").trim();
-				 else value = record.split(":")[1].trim();
-				 //System.out.println("KEY: " + key);
-				 //System.out.println("VALUE: " + value);
-				 settings.put(key.trim(), value);
-			 }
-		 }*/
-		 //for(int i =0; i < settings.size(); i++)
-			// System.out.println(settings.);
 	}
 	
 	public String get(String key)

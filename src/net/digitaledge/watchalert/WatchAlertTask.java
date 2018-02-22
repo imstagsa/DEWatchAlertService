@@ -6,55 +6,28 @@ import java.util.List;
 public class WatchAlertTask {
 
 	private Integer taskNumber; 
-	private String httpLink; 
-	private String indice;
-	private String querybody;
-	private String timeformat;
-	private Integer period;
-	private String campareFlag;
-	private String procedure;
-	private String httpBody;
-	private Integer greaterThan;
-	private Integer lessThan;
-	private Integer timeZoneDiff;
-	private String emailFlag;
-	private String smtpServer;
-	private String smtpFrom;
-	private String smtpPassword;
-	private String smtpSubject;
-	private String smtpBody;
-	private List<String> recipients;
-	private List<String> keywords;
-	private List<String> fields;
-	private List<MapVariableValue> replaceFields;
+	private Integer period = 10;
+	private String httpLink = new String();
+	private String indice  = new String();
+	private String timeformat = new String();
+	private String httpBody = new String();
+	private Integer timeZoneDiff = 0;
+	private String emailFlag  = new String("NO");
+	private String smtpServer = new String();
+	private String smtpFrom  = new String();
+	private String smtpPassword = new String();
+	private String smtpSubject = new String();
+	private String smtpBody = new String();
+	private List<String> recipients = new ArrayList<String>();
+
+	//
+	private List<WatchAlertTaskQuery> taskQueries = new ArrayList<WatchAlertTaskQuery>();
 
 	private Long nextExecuteTime = new Long(0);
 	
 	public WatchAlertTask(Integer number)
 	{
-		this.taskNumber = number;
-		this.indice = new String();
-		this.querybody = new String();
-		this.period = 10;
-		this.greaterThan = 0;
-		this.lessThan = 0;
-		this.timeZoneDiff = 0;
-		this.campareFlag = new String("NO_COMPARE");
-		this.procedure = new String();
-		this.keywords = new ArrayList<String>();
-		this.fields = new ArrayList<String>();
-		this.timeformat = new String("");
-		this.httpBody = new String();
-		this.httpLink = new String();
-		this.emailFlag = new String("NO");
-		this.smtpServer = new String();
-		this.smtpFrom = new String();
-		this.smtpPassword = new String();
-		this.smtpSubject = new String();
-		this.smtpBody = new String();
-		this.recipients = new ArrayList<String>();
-		this.replaceFields = new ArrayList<MapVariableValue>();
-		
+		this.taskNumber = number;	
 	}
 
 	public Integer getTaskNumber() {
@@ -67,14 +40,6 @@ public class WatchAlertTask {
 	
 	public void setIndice(String indice) {
 		this.indice = indice;
-	}
-	
-	public String getQuerybody() {
-		return querybody;
-	}
-	
-	public void setQuerybody(String querybody) {
-		this.querybody = querybody;
 	}
 	
 	public Integer getPeriod() {
@@ -110,56 +75,12 @@ public class WatchAlertTask {
 		this.timeformat = timeformat;
 	}
 
-	public List<String> getFields() {
-		return fields;
-	}
-
-	public void setFields(String field) {
-		String[] stringArray = field.split(" ");
-		for(int i=0; i < stringArray.length; i++)
-			this.fields.add(stringArray[i]);
-	}
-	
-	public List<String> getKeywords() {
-		return keywords;
-	}
-	
-	public void setKeywords(String keywords) {
-		String[] stringArray = keywords.split(" ");
-		for(int i=0; i < stringArray.length; i++)
-			this.keywords.add(stringArray[i]);
-	}
-	
 	public Long getNextExecuteTime() {
 		return nextExecuteTime;
 	}
 	
 	public void setNextExecuteTime(Long nextExecuteTime) {
 		this.nextExecuteTime = nextExecuteTime;
-	}
-	
-	public String getCampareFlag() {
-		return campareFlag;
-	}
-
-	public void setCampareFlag(String campareFlag) {
-		this.campareFlag = campareFlag;
-	}
-
-	public Integer getGreaterThan() {
-		return greaterThan;
-	}
-
-	public void setGreaterThan(Integer greaterThan) {
-		this.greaterThan = greaterThan;
-	}
-
-	public Integer getLessThan() {
-		return lessThan;
-	}
-
-	public void setLessThan(Integer lessThan) {
-		this.lessThan = lessThan;
 	}
 	
 	public Integer getTimeZoneDiff() {
@@ -228,34 +149,12 @@ public class WatchAlertTask {
 			this.recipients.add(stringArray[i]);
 	}
 
-	public String getProcedure() {
-		return procedure;
+	public List<WatchAlertTaskQuery> getTaskQueries() {
+		return taskQueries;
 	}
 
-	public void setProcedure(String procedure) {
-		this.procedure = procedure;
-	}
-	
-	public List<MapVariableValue> getReplaceFields() {
-		return replaceFields;
-	}
-
-	public void setReplaceFields(String fieldsFor) {
-		try{
-			String[] stringArray = fieldsFor.split(" ");
-			for(int y = 0; y < stringArray.length; y++)
-			{
-				String[] stringArray2 = stringArray[y].split(":");
-				if(stringArray2.length == 2)
-				{
-					MapVariableValue watchAlertReplaceFields = new MapVariableValue();
-					watchAlertReplaceFields.setValue(stringArray2[0]);
-					watchAlertReplaceFields.setVariable(stringArray2[1]);
-					this.replaceFields.add(watchAlertReplaceFields);
-				}
-			}
-		}
-		catch(Exception e){ e.toString();}
+	public void setTaskQueries(List<WatchAlertTaskQuery> taskQueries) {
+		this.taskQueries = taskQueries;
 	}
 }
 

@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 /**
- * This class is parsing JSON string and providing basic functianality such as find an JSON Object or convert JSON to List<MapVariableValue>
+ * This class is parsing JSON string and providing basic functionality such as find an JSON Object or convert JSON to List<MapVariableValue>
  * @author esimacenco
  *
  */
@@ -18,8 +18,19 @@ public class JSONUtils {
 	
 	
 	private JSONParser parser = new JSONParser();
+	int i = 0;
 	
 	public JSONUtils() {}
+	
+	
+/*	public static void main(String[] args)
+	{
+		String json = new String("{\"_shards\":{\"total\":3,\"failed\":0,\"successful\":3,\"skipped\":0},\"hits\":{\"hits\":[],\"total\":6444,\"max_score\":0.0},\"took\":1,\"timed_out\":false,\"aggregations\":{\"userPrincipalName\":{\"doc_count_error_upper_bound\":0,\"sum_other_doc_count\":0,\"buckets\":[{\"doc_count\":6444,\"location\":{\"value\":5},\"key\":\"mmiao\"},{\"doc_count\":6444,\"location\":{\"value\":5},\"key\":\"numerix.com\"}]}}}");
+		JSONUtils jSONParser = new JSONUtils();
+		Object obj =  jSONParser.parse(json);
+		List<MapVariableValue> receivedNodes = jSONParser.convertToMapVariableValue((JSONObject)obj);
+		System.out.println("receivedNodes.size " + receivedNodes.size());
+	}*/
 	
 	public Object parse(String json)
 	{
@@ -59,15 +70,14 @@ public class JSONUtils {
 	
     public static List<MapVariableValue> convertToMapVariableValue(JSONObject jsonObject)
     {
-    	
     	List<MapVariableValue> listOfObjects = new ArrayList<MapVariableValue>();
-    	for (Object key : ((JSONObject)jsonObject).keySet()) 
-    		convertJSONObject(jsonObject, listOfObjects);
+    	convertJSONObject(jsonObject, listOfObjects);
     	return listOfObjects;
     }
     
     private static void convertJSONObject(JSONObject jsonObject, List<MapVariableValue> listOfObjects)
     {
+    
     	try {
     	 for (Object key : jsonObject.keySet()) {
 
@@ -78,21 +88,19 @@ public class JSONUtils {
             	 listOfObjects.add(new MapVariableValue(keyStr, ""));
             	 convertJsonArray((JSONArray)keyvalue, listOfObjects);
              }
-             else if ( keyvalue instanceof JSONObject)
+             else if( keyvalue instanceof JSONObject)
              {
-            	 listOfObjects.add(new MapVariableValue(keyStr, ""));
-            	 convertJSONObject((JSONObject)keyvalue, listOfObjects);
+            		 listOfObjects.add(new MapVariableValue(keyStr, ""));
+            		 convertJSONObject((JSONObject)keyvalue, listOfObjects);
              }
-             else
-            	 if (keyvalue instanceof Long)
-            		 listOfObjects.add(new MapVariableValue(keyStr, keyvalue.toString()));
-            	 else if (keyvalue instanceof String)
-            		 listOfObjects.add(new MapVariableValue(keyStr, (String) keyvalue));
+             else if(keyvalue instanceof Long)
+            	 listOfObjects.add(new MapVariableValue(keyStr, keyvalue.toString()));
+             else if(keyvalue instanceof String)
+            	 listOfObjects.add(new MapVariableValue(keyStr, (String) keyvalue));
          }
      } catch (Exception e) {
          e.printStackTrace();
      }
-    	
     } 
     
     private static void convertJsonArray(JSONArray  jsonArray, List<MapVariableValue> listOfObjects)

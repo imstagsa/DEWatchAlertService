@@ -1,23 +1,33 @@
 watchalert.elastichost: 192.168.19.174
 watchalert.elasticport: 9200
 
-watchalert.task1.indice: /nrx-azure-signin*/_search?pretty
-watchalert.task1.querybody: '{"query":{"bool":{"must":[{"exists":{"field":"signinDateTime"}},{"range":{"signinDateTime":{"gte": "2018-02-14T12:00:38.167Z"}}}]}},"aggs": {"userPrincipalName":{ "terms": {"field": "userPrincipalName" }, "aggs" :{"location": { "terms": {"field": "city" }}}}}}'
-watchalert.task1.period: 30
-watchalert.task1.timeZoneDiff: -24
-watchalert.task1.procedure: numerixGetUserLoginsLocations
-watchalert.task1.replaceFields: 'user:OBJECTDN ATTEMPTS:ATTEMPTS'
-watchalert.task1.action.smtpserver: mc2.digitaledge.net:25
-watchalert.task1.action.smtpfrom: supportteam2asdad@digitaledge.net
-watchalert.task1.action.recipients: to:esimacenco@digitaledge.net cc:nlavnevich@DIGITALEDGE.NET
-watchalert.task1.action.smtpsubject: ELK Alerts, User signed in from different city
+watchalert.task1.indice: /nrx-azure-signin-%YEAR%.%MONTH%/_search?pretty
+watchalert.task1.period: 300
+watchalert.task1.timeZoneDiff: 3
+watchalert.task1.query1.querybody: '{"query":{"bool":{"must":[{"exists":{"field":"signinDateTime"}},{"range":{"signinDateTime":{"gte": "2018-02-20T15:04:35.468Z"}}},{"match":{"userPrincipalName":"sohanlon"}}]}}}'
+watchalert.task1.query1.fields: userPrincipalName
+watchalert.task1.query1.keywords: *
+watchalert.task1.query1.replaceFields: 'value:USERID userPrincipalName:userPrincipalName ipAddress:IPADDR city:CITY state:STATE userDisplayName:USERNAME'
+#watchalert.task1.query2.querybody: '{"size": 0,"query":{"bool":{"must":[{"exists":{"field":"signinDateTime"}},{"match":{"userPrincipalName":"%userPrincipalName%"}}]}},"aggs": {"userPrincipalName": { "terms": {"field": "userPrincipalName" },"aggs" :{"location": { "cardinality": {"field": "city" }}}}}}'
+#watchalert.task1.query2.fields: value
+#watchalert.task1.query2.gt: 2
+#watchalert.task1.query2.replaceFields: 'value:USERID userPrincipalName:userPrincipalName'
+#watchalert.task1.query3.querybody: '{"size": 0,"query":{"bool":{"must":[{"exists":{"field":"signinDateTime"}},{"match":{"userPrincipalName":"%userPrincipalName%"}}]}},"aggs": {"userPrincipalName":{ "terms": {"field": "userPrincipalName" },"aggs" :{"location": { "terms": {"field": "city" }}}}}}'
+#watchalert.task1.query3.procedure: numerixGetUserLoginsLocations
+#watchalert.task1.query3.replaceFields: 'value:USERID key:userPrincipalName ATTEMPTS:ATTEMPTS'
+watchalert.task1.action.smtpserver: exchange2013.digitaledge.net:2575
+watchalert.task1.action.smtpfrom: supportteam@digitaledge.net
+watchalert.task1.action.recipients: to:esimacenco@digitaledge.net cc:nlavnevich@digitaledge.net
+watchalert.task1.action.smtpsubject: ELK Alerts Steve OHanlon logins
 watchalert.task1.action.smtpbody: '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <html>
 <body lang=EN-US link=blue vlink=purple>
 <div>
-<p>User signed in from different city</p>
-<p>Username: %MESSAGE%.</p> 
-<p>List of cities: %ATTEMPTS%</p>
+<p>User %USERNAME% just signed in from:</p>
+<p>City: %CITY%</p>
+<p>State: %STATE%</p>
+<p>From IP Address: %IPADDR%</p>
 </div>
 </body>
 </html>'
+
