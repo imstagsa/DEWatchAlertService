@@ -1,33 +1,59 @@
 watchalert.elastichost: 192.168.19.174
 watchalert.elasticport: 9200
 
-watchalert.task1.indice: /nrx-azure-signin-%YEAR%.%MONTH%/_search?pretty
-watchalert.task1.period: 300
-watchalert.task1.timeZoneDiff: 3
-watchalert.task1.query1.querybody: '{"query":{"bool":{"must":[{"exists":{"field":"signinDateTime"}},{"range":{"signinDateTime":{"gte": "2018-02-20T15:04:35.468Z"}}},{"match":{"userPrincipalName":"sohanlon"}}]}}}'
-watchalert.task1.query1.fields: userPrincipalName
-watchalert.task1.query1.keywords: *
-watchalert.task1.query1.replaceFields: 'value:USERID userPrincipalName:userPrincipalName ipAddress:IPADDR city:CITY state:STATE userDisplayName:USERNAME'
-#watchalert.task1.query2.querybody: '{"size": 0,"query":{"bool":{"must":[{"exists":{"field":"signinDateTime"}},{"match":{"userPrincipalName":"%userPrincipalName%"}}]}},"aggs": {"userPrincipalName": { "terms": {"field": "userPrincipalName" },"aggs" :{"location": { "cardinality": {"field": "city" }}}}}}'
-#watchalert.task1.query2.fields: value
-#watchalert.task1.query2.gt: 2
-#watchalert.task1.query2.replaceFields: 'value:USERID userPrincipalName:userPrincipalName'
-#watchalert.task1.query3.querybody: '{"size": 0,"query":{"bool":{"must":[{"exists":{"field":"signinDateTime"}},{"match":{"userPrincipalName":"%userPrincipalName%"}}]}},"aggs": {"userPrincipalName":{ "terms": {"field": "userPrincipalName" },"aggs" :{"location": { "terms": {"field": "city" }}}}}}'
-#watchalert.task1.query3.procedure: numerixGetUserLoginsLocations
-#watchalert.task1.query3.replaceFields: 'value:USERID key:userPrincipalName ATTEMPTS:ATTEMPTS'
+watchalert.task1.indice: /nrx-dc-%YEAR%.%MONTH%/_search?pretty
+watchalert.task1.period: 30
+watchalert.task1.timeZoneDiff: 5
+watchalert.task1.query1.querybody: '{"query":{"bool":{"must":{"range":{"@timestamp":{"gte":"2018-06-05T18:03:18.468Z"}}}}}}'
+watchalert.task1.query1.fields: level
+watchalert.task1.query1.keywords: Error
+watchalert.task1.query1.replaceFields: 'Operations:OPERATION TargetUserOrGroupName:MEMBERS UserId:USERID AuditData:MESSAGE ObjectId:OBJECTID'
 watchalert.task1.action.smtpserver: exchange2013.digitaledge.net:2575
 watchalert.task1.action.smtpfrom: supportteam@digitaledge.net
-watchalert.task1.action.recipients: to:esimacenco@digitaledge.net cc:nlavnevich@digitaledge.net
-watchalert.task1.action.smtpsubject: ELK Alerts Steve OHanlon logins
-watchalert.task1.action.smtpbody: '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<html>
-<body lang=EN-US link=blue vlink=purple>
-<div>
-<p>User %USERNAME% just signed in from:</p>
-<p>City: %CITY%</p>
-<p>State: %STATE%</p>
-<p>From IP Address: %IPADDR%</p>
-</div>
-</body>
-</html>'
-
+watchalert.task1.action.recipients: to:esimacenco@digitaledge.net
+watchalert.task1.action.smtpsubject: ELK Alert, Office 365 Admin Action detected
+watchalert.task1.action.smtpbody: '<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+/* Font Definitions */
+@font-face
+{font-family:Calibri;
+panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+{margin:0in;
+margin-bottom:.0001pt;
+font-size:11.0pt;
+font-family:"Calibri","sans-serif";}
+a:link, span.MsoHyperlink
+{mso-style-priority:99;
+color:blue;
+text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+{mso-style-priority:99;
+color:purple;
+text-decoration:underline;}
+span.EmailStyle17
+{mso-style-type:personal-compose;
+font-family:"Calibri","sans-serif";
+color:windowtext;}
+.MsoChpDefault
+{mso-style-type:export-only;
+font-family:"Calibri","sans-serif";}
+@page WordSection1
+{size:8.5in 11.0in;
+margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext="edit" spidmax="1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext="edit">
+<o:idmap v:ext="edit" data="1" />
+</o:shapelayout></xml><![endif]--></head><body lang=EN-US link=blue vlink=purple>
+<div class=WordSection1>
+    <p class=MsoNormal><span style='color:#1F497D'>Source: Office 365 Admin Actions Log<o:p></o:p></span></p>
+    <p class=MsoNormal><span style='color:#1F497D'>Operation: %OPERATION%<o:p></o:p></span></p>
+    <p class=MsoNormal><span style='color:#1F497D'>Members: %MEMBERS%<o:p></o:p></span></p>
+    <p class=MsoNormal><span style='color:#1F497D'>UserId: %USERID%<o:p></o:p></span></p>
+    <p class=MsoNormal><span style='color:#1F497D'>Object ID: %OBJECTID%<o:p></o:p>
+    </span></p><p class=MsoNormal><o:p>&nbsp;</o:p></p><p class=MsoNormal><o:p>&nbsp;</o:p></p>
+</div></body></html>'

@@ -1,6 +1,7 @@
 package net.digitaledge.watchalert;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -11,14 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import org.json.simple.JSONObject;
 
@@ -26,9 +19,8 @@ public class WatchAlertsWorker implements Runnable {
 
 	//private String enableDebug = new String("false");
 	private WatchAlertReadConfig watchAlertConfig;
-	private int arrayList = 0, key = 0;
-	
-	private Boolean jsonStrated = false, parseValue = false;
+	private int arrayList = 0;
+	private Boolean jsonStrated = false;
 	//private static Logger LOGGER = Logger.getLogger("InfoLogging");
 	
 	/**
@@ -215,7 +207,49 @@ public class WatchAlertsWorker implements Runnable {
 		informer.notify(taskNodes, watchAlertTask, watchAlertTaskQueryTmp);
 	}
 	
-	private String getNewLogs(WatchAlertTask watchAlertTask, WatchAlertTaskQuery watchAlertTaskQuery, MapAlertStrings taskNode)
+	
+	private String getNewLogs(WatchAlertTask watchAlertTask, WatchAlertTaskQuery watchAlertTaskQuery, MapAlertStrings taskNode) {
+		String json = new String();
+	    Timestamp timestamp1 = new Timestamp(System.currentTimeMillis());
+	    
+		String urlParameters = new String();
+		if(taskNode == null)
+			urlParameters = WatchAlertUtils.replaceKeywords(watchAlertTaskQuery.getQuerybody(), watchAlertTask, watchAlertTaskQuery, null);
+		else
+			urlParameters = WatchAlertUtils.replaceKeywords(watchAlertTaskQuery.getQuerybody(), watchAlertTask, watchAlertTaskQuery, taskNode.getAlertMapStrings());
+	    	
+        StringBuilder stringBuilder = new StringBuilder("http://"+watchAlertConfig.getElasticHost()+":" + watchAlertConfig.getElasticPort() + WatchAlertUtils.replaceKeywords(watchAlertTask.getIndice(), watchAlertTask, watchAlertTaskQuery, null));
+        StringBuffer response = new StringBuffer();
+        try{
+        	URL obj = new URL(stringBuilder.toString());
+        	HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        	con.setRequestMethod("GET");
+        	con.setRequestProperty("User-Agent", "java");
+        	con.setRequestProperty("Accept-Charset", "UTF-8");
+        	con.setRequestProperty("Accept", "*/*");
+        	con.setRequestProperty("Content-Type","application/json");
+        	con.setDoOutput(true);
+        	if(urlParameters.length() > 0){
+        		urlParameters = urlParameters + "\r\n";
+        		con.setRequestProperty("Content-Length", Integer.toString(urlParameters.getBytes().length));
+        		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        		wr.writeBytes(urlParameters);
+        		wr.flush();
+        		wr.close();
+        	}
+        	BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        	while ((json = in.readLine()) != null) {
+        		response.append(json);
+        	}
+        	in.close();
+        	System.out.println(response.toString());
+        } catch(Exception e){System.out.println(e.toString());}
+        
+        System.out.println("Spend time: " + (timestamp1.getTime() - timestamp1.getTime()) + "ms");
+        return response.toString();
+	}
+	
+	private String getNewLogsOld(WatchAlertTask watchAlertTask, WatchAlertTaskQuery watchAlertTaskQuery, MapAlertStrings taskNode)
 	{
 
 		try {
@@ -227,13 +261,13 @@ public class WatchAlertsWorker implements Runnable {
 			else
 				urlParameters = WatchAlertUtils.replaceKeywords(watchAlertTaskQuery.getQuerybody(), watchAlertTask, watchAlertTaskQuery, taskNode.getAlertMapStrings());
 			System.out.println(urlParameters);
-			byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+			//byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 			Socket socket = new Socket(InetAddress.getByName(watchAlertConfig.getElasticHost()), Integer.parseInt(watchAlertConfig.getElasticPort()));
 			PrintWriter pw = new PrintWriter(socket.getOutputStream());
 			pw.print("XGET " + WatchAlertUtils.replaceKeywords(watchAlertTask.getIndice(), watchAlertTask, watchAlertTaskQuery, null) + " HTTP/1.1\r\n");
 			pw.print("Host: "+ InetAddress.getByName(watchAlertConfig.getElasticHost())+":"+Integer.parseInt(watchAlertConfig.getElasticPort())+"\r\n");
 			pw.print("Accept: */*\r\n");
-			pw.print("Content-Length: " + Integer.toString(postData.length) +"\r\n");
+			//pw.print("Content-Length: " + Integer.toString(postData.length) +"\r\n");
 			pw.print("Content-Type: application/x-www-form-urlencoded\r\n");
 			pw.print("\r\n");
 			pw.print(urlParameters);

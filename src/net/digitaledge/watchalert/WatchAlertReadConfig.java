@@ -14,7 +14,7 @@ public class WatchAlertReadConfig {
 	private String elasticHost = new String("127.0.0.1");
 	private String elasticPort = new String("9200");
 	private String enableDebug = new String("false");
-	private Integer maxTasks = new Integer(20);
+	private Integer maxTasks = new Integer(100);
 	private WatchAlertSettings settings;
 	private List<WatchAlertTask> watchAlertTaskList = new ArrayList<WatchAlertTask>();
 	
