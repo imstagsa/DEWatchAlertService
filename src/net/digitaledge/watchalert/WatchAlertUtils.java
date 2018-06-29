@@ -7,13 +7,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class WatchAlertUtils {
+	
+	final static Logger logger = Logger.getLogger("WatchalertService");
 	
 	public static Long getEpochTime()
 	{
 		return Instant.now().getEpochSecond();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static String getTimeStamp(Integer seconds, Integer diff)
 	{
 		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -24,6 +29,7 @@ public class WatchAlertUtils {
 		return  df1.format(today) + "T"+df2.format(today)+"Z";
 	}
 	
+	@SuppressWarnings("deprecation")
 	private static String getDateTime(String format, Integer diff)
 	{
 		DateFormat df = new SimpleDateFormat(format);
@@ -38,6 +44,7 @@ public class WatchAlertUtils {
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	private static String getDateTimeMinusPeriod(String format, Integer diff, Integer seconds)
 	{
 		DateFormat df = new SimpleDateFormat(format);
@@ -84,10 +91,10 @@ public class WatchAlertUtils {
 									if(nodes.get(i).getValue().contains("$"))
 										nodes.get(i).setValue(((String)nodes.get(i).getValue()).replaceAll("\\$", ""));
 									str = str.replaceAll("%"+replaceFields.getVariable()+"%", nodes.get(i).getValue());
-									System.out.println("Found replacement field:" + nodes.get(i).getValue() + " with pattern: " + replaceFields.getVariable());
+									logger.debug("Found replacement field:" + nodes.get(i).getValue() + " with pattern: " + replaceFields.getVariable());
 								}
 								catch(Exception e) {
-									System.out.println(e.toString());
+									logger.error(e.toString());
 								}
 							}
 						}
@@ -98,7 +105,7 @@ public class WatchAlertUtils {
 			return str;
 		
     	} catch (Exception e) {
-    		System.out.println(e.toString());
+    		logger.error(e.toString());
     		return null;
 		} 		
 	}

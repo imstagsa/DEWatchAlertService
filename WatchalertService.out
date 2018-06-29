@@ -1,0 +1,33 @@
+{"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"2018-06-29T22:07:06.650Z"}}}]}}}
+---------------------START CONFIG----------------------------------------
+Elastic Host: 192.168.11.201
+Elastic Port: 9200
+Enable debug: false
+Task 1 httpAction: https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4693&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%
+Task 1 httpBody: No logs have been received from Kanematsu PaloAlto device for last 5 minutes. Call Evghenii 929-202-1178.
+Task 1 Period: 30
+Task 1 TimeZoneDiff: 4
+Task 1 Query 1 Querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"2018-06-29T22:07:06.650Z"}}}]}}}
+Task 1 Query 1 Procedure: 
+Task 1 Query 1 GreaterThan: 0
+Task 1 Query 1 LessThan: 10
+Task 1 Query fields: count
+Task 1 Query Replace Fields: Operations Pattern: OPERATION
+Task 1 Query Replace Fields: TargetUserOrGroupName Pattern: MEMBERS
+Task 1 Query Replace Fields: UserId Pattern: USERID
+Task 1 Query Replace Fields: AuditData Pattern: MESSAGE
+Task 1 Query Replace Fields: ObjectId Pattern: OBJECTID
+-------------------END CONFIG------------------------------------------
+WatchAlertsWorker run
+executeJob()
+Task next timestamp: 0 and now timestamp: 1530313354
+Executing getNewLogs for TASK: 1
+urlParameters: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"2018-06-29T22:07:06.650Z"}}}]}}}
+Spend time: 0ms
+JSON: {  "count" : 4750,  "_shards" : {    "total" : 2,    "successful" : 2,    "failed" : 0  }}
+========================================================================================
+activeAlert length: 0
+taskNodes length: 0
+watchAlertTask.getStoreActiveState() = 1
+executeJob()
+Task next timestamp: 1530313384 and now timestamp: 1530313364

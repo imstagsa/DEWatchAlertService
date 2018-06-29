@@ -1,6 +1,5 @@
 package net.digitaledge.watchalert;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +21,6 @@ public class JSONUtils {
 	
 	public JSONUtils() {}
 	
-	
-/*	public static void main(String[] args)
-	{
-		String json = new String("{\"_shards\":{\"total\":3,\"failed\":0,\"successful\":3,\"skipped\":0},\"hits\":{\"hits\":[],\"total\":6444,\"max_score\":0.0},\"took\":1,\"timed_out\":false,\"aggregations\":{\"userPrincipalName\":{\"doc_count_error_upper_bound\":0,\"sum_other_doc_count\":0,\"buckets\":[{\"doc_count\":6444,\"location\":{\"value\":5},\"key\":\"mmiao\"},{\"doc_count\":6444,\"location\":{\"value\":5},\"key\":\"numerix.com\"}]}}}");
-		JSONUtils jSONParser = new JSONUtils();
-		Object obj =  jSONParser.parse(json);
-		List<MapVariableValue> receivedNodes = jSONParser.convertToMapVariableValue((JSONObject)obj);
-		System.out.println("receivedNodes.size " + receivedNodes.size());
-	}*/
 	
 	public Object parse(String json)
 	{
@@ -186,60 +176,4 @@ public class JSONUtils {
      }
     }
     
-    
-    
-/*    public static void printJson(JSONObject jsonObject)
-    {
-    	
-    	try {
-    	 for (Object key : jsonObject.keySet()) {
-
-             String keyStr = (String)key;
-             Object keyvalue = jsonObject.get(keyStr);
-             System.out.println("key: "+ keyStr);
-             if(keyvalue instanceof JSONArray)
-             {
-              	System.out.println("value is JSONObject");
-              	printJsonArray((JSONArray)keyvalue);
-             }
-             else if ( keyvalue instanceof JSONObject)
-             {
-             	System.out.println("value is JSONObject");
-             	printJson((JSONObject)keyvalue);
-             }
-             else
-             	System.out.println("value: " + keyvalue);            
-         }
-     } catch (Exception e) {
-         e.printStackTrace();
-     }
-    	
-    } 
-
-    public static void printJsonArray(JSONArray  jsonArray)
-    {
-    	try {
-    		
-    		int questionSize =  jsonArray.size();
-            for(int i=0; i< questionSize; i++){
-            	
-            	Object keyvalue = jsonArray.get(i);
-            	System.out.println(keyvalue.toString());
-                if(keyvalue instanceof JSONArray)
-                {
-                 	System.out.println("value is JSONObject");
-                 	printJsonArray((JSONArray)keyvalue);
-                }
-                else if ( keyvalue instanceof JSONObject)
-                {
-                	System.out.println("value is JSONObject");
-                	printJson((JSONObject)keyvalue);
-                }
-                else
-                	System.out.println("value: " + keyvalue);
-            }
-     } catch (Exception e) {
-         e.printStackTrace();
-     }
-    }*/
 }

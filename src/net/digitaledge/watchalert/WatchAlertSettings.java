@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static java.util.stream.Collectors.toList;
+
+import org.apache.log4j.Logger;
 
 public class WatchAlertSettings {
 
-	private Map settings = new HashMap<String, String>();
+	private Map<String, String> settings = new HashMap<String, String>();
+	final static Logger logger = Logger.getLogger("WatchalertService");
+	
 	public WatchAlertSettings()
 	{
 		if(readFile("watchalert.yml") == null)
@@ -28,14 +31,11 @@ public class WatchAlertSettings {
 		  BufferedReader reader;
 		  try {
 			  reader = new BufferedReader(new FileReader(filename));
-			  if(reader!=null)
-				  return readParse(reader);
-			  else return null;
+			  return readParse(reader);
 				  
 		  } catch (FileNotFoundException e1) {
-			System.out.println("Cannot read config file " + filename + ". Exiting...");
+			logger.error("Cannot read config file " + filename + ". Exiting...");
 			return null;
-			
 		  }
 	}
 	
@@ -53,25 +53,17 @@ public class WatchAlertSettings {
 	    		line = line.trim();
 	    		if(!line.startsWith("#"))
 	    		{
-	    		//System.out.println(line);
-	    		if(isSingleQuote)
-				 {
-					 if(line.endsWith("'"))
-					 {
-						 isSingleQuote = false;
-						 //System.out.println("Starting with: " + record);
-						 record = record.replaceAll("'", "");
-						 line = line.replaceAll("'", "");
-					 	 settings.put(key.trim(), record + line);
-					 	 record = "";
-					 	 //System.out.println("KEY: " + key.trim());
-						 //System.out.println("VALUE: " + record + line);
-					 }
-					 else
-					 {
-						 //System.out.println("Starting with: " + record);
-						 record = record + line;
-					 }
+	    			if(isSingleQuote)
+	    			{
+	    				if(line.endsWith("'"))
+	    				{
+	    					isSingleQuote = false;
+	    					record = record.replaceAll("'", "");
+	    					line = line.replaceAll("'", "");
+	    					settings.put(key.trim(), record + line);
+	    					record = "";
+	    				}
+					 else record = record + line;
 				 }
 	    		
 	    		else if(line.startsWith("watchalert"))
@@ -84,29 +76,21 @@ public class WatchAlertSettings {
 					 
 					 if(value.startsWith("'"))
 					 {
-						 //System.out.println("Start with '  " + value );
 						 if(value.endsWith("'"))
 						 {
-							 //System.out.println("false '  " + value );
 							 value = value.replaceAll("'", "");
 							 settings.put(key.trim(), value);
-							 //System.out.println("KEY: " + key.trim());
-							 //System.out.println("VALUE: " + value);
 							 isSingleQuote = false;
 						 }
 						 else
 						 {
-							 //System.out.println("true '  " + value );
 							 isSingleQuote = true;
 							 record = record + value;
 						 }
-						 
 					 }
 					 else
 					 {
 						 settings.put(key.trim(), value);
-						 //System.out.println("KEY: " + key);
-						 //System.out.println("VALUE: " + value);
 					 }
 					 
 				}   			
@@ -119,8 +103,8 @@ public class WatchAlertSettings {
 	  }
 	  catch (Exception e)
 	  {
-	    System.err.format("Exception occurred trying to read config file in line: " + line);
-	    System.out.format(e.toString());
+	    logger.error("Exception occurred trying to read config file in line: " + line);
+	    logger.error(e.toString());
 	    return null;
 	  }
 	}

@@ -1,59 +1,14 @@
-watchalert.elastichost: 192.168.19.174
+watchalert.elastichost: 192.168.11.201
 watchalert.elasticport: 9200
 
-watchalert.task1.indice: /nrx-dc-%YEAR%.%MONTH%/_search?pretty
+
+watchalert.task1.indice: '/auriga-fortigate-%YEAR%.%MONTH%/_count?pretty'
 watchalert.task1.period: 30
-watchalert.task1.timeZoneDiff: 5
-watchalert.task1.query1.querybody: '{"query":{"bool":{"must":{"range":{"@timestamp":{"gte":"2018-06-05T18:03:18.468Z"}}}}}}'
-watchalert.task1.query1.fields: level
-watchalert.task1.query1.keywords: Error
+watchalert.task1.timeZoneDiff: 4
+watchalert.task1.query1.querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"2018-06-29T22:07:06.650Z"}}}]}}}
+watchalert.task1.query1.fields: count
+watchalert.task1.query1.lt: 10
 watchalert.task1.query1.replaceFields: 'Operations:OPERATION TargetUserOrGroupName:MEMBERS UserId:USERID AuditData:MESSAGE ObjectId:OBJECTID'
-watchalert.task1.action.smtpserver: exchange2013.digitaledge.net:2575
-watchalert.task1.action.smtpfrom: supportteam@digitaledge.net
-watchalert.task1.action.recipients: to:esimacenco@digitaledge.net
-watchalert.task1.action.smtpsubject: ELK Alert, Office 365 Admin Action detected
-watchalert.task1.action.smtpbody: '<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
-/* Font Definitions */
-@font-face
-{font-family:Calibri;
-panose-1:2 15 5 2 2 2 4 3 2 4;}
-/* Style Definitions */
-p.MsoNormal, li.MsoNormal, div.MsoNormal
-{margin:0in;
-margin-bottom:.0001pt;
-font-size:11.0pt;
-font-family:"Calibri","sans-serif";}
-a:link, span.MsoHyperlink
-{mso-style-priority:99;
-color:blue;
-text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-{mso-style-priority:99;
-color:purple;
-text-decoration:underline;}
-span.EmailStyle17
-{mso-style-type:personal-compose;
-font-family:"Calibri","sans-serif";
-color:windowtext;}
-.MsoChpDefault
-{mso-style-type:export-only;
-font-family:"Calibri","sans-serif";}
-@page WordSection1
-{size:8.5in 11.0in;
-margin:1.0in 1.0in 1.0in 1.0in;}
-div.WordSection1
-{page:WordSection1;}
---></style><!--[if gte mso 9]><xml>
-<o:shapedefaults v:ext="edit" spidmax="1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
-<o:shapelayout v:ext="edit">
-<o:idmap v:ext="edit" data="1" />
-</o:shapelayout></xml><![endif]--></head><body lang=EN-US link=blue vlink=purple>
-<div class=WordSection1>
-    <p class=MsoNormal><span style='color:#1F497D'>Source: Office 365 Admin Actions Log<o:p></o:p></span></p>
-    <p class=MsoNormal><span style='color:#1F497D'>Operation: %OPERATION%<o:p></o:p></span></p>
-    <p class=MsoNormal><span style='color:#1F497D'>Members: %MEMBERS%<o:p></o:p></span></p>
-    <p class=MsoNormal><span style='color:#1F497D'>UserId: %USERID%<o:p></o:p></span></p>
-    <p class=MsoNormal><span style='color:#1F497D'>Object ID: %OBJECTID%<o:p></o:p>
-    </span></p><p class=MsoNormal><o:p>&nbsp;</o:p></p><p class=MsoNormal><o:p>&nbsp;</o:p></p>
-</div></body></html>'
+watchalert.task1.action.httpbody: No logs have been received from Kanematsu PaloAlto device for last 5 minutes. Call Evghenii 929-202-1178.
+watchalert.task1.action.clearalerthttplink: 'https://ems.digitaledge.net/service4/RemoveAlert.asp?DeviceID=4631&AlertType=Critical&AlertMessage=%MESSAGE%'
+watchalert.task1.action.sendalerthttplink: 'https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4693&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%'

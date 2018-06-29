@@ -5,9 +5,11 @@ import java.util.List;
 
 public class WatchAlertTask {
 
-	private Integer taskNumber; 
+	private Integer taskNumber = 0; 
 	private Integer period = 10;
-	private String httpLink = new String();
+	private Integer storeActiveState = 0; //this variable is designed to keep state of this alert: 0 - this task doesn't keep alerts state, 1 - alert is not active, 2 - alert is active. 
+	private String sendAlertHTTPLink = new String();
+	private String clearAlertHTTPLink = new String();
 	private String indice  = new String();
 	private String timeformat = new String();
 	private String httpBody = new String();
@@ -17,10 +19,12 @@ public class WatchAlertTask {
 	private String smtpFrom  = new String();
 	private String smtpPassword = new String();
 	private String smtpSubject = new String();
-	private String smtpBody = new String();
+	private String sendAlertEmailBody = new String();
+	private String clearAlertEmailBody = new String();
+	private MapAlertStrings alertBody = new MapAlertStrings(); 
+
 	private List<String> recipients = new ArrayList<String>();
 
-	//
 	private List<WatchAlertTaskQuery> taskQueries = new ArrayList<WatchAlertTaskQuery>();
 
 	private Long nextExecuteTime = new Long(0);
@@ -46,19 +50,18 @@ public class WatchAlertTask {
 		return period;
 	}
 	
-	public String getHttpLink() {
-		return httpLink;
+	public String getSendAlertHttpLink() {
+		return sendAlertHTTPLink;
 	}
 
-	public void setHttpLink(String httpLink) {
-		this.httpLink = httpLink;
+	public void setSendAlertHttpLink(String httpLink) {
+		this.sendAlertHTTPLink = httpLink;
 	}
 
 
 	public String getHttpBody() {
 		return httpBody;
 	}
-
 
 	public void setHttpBody(String httpBody) {
 		this.httpBody = httpBody;
@@ -131,12 +134,12 @@ public class WatchAlertTask {
 		this.smtpSubject = smtpSubject;
 	}
 
-	public String getSmtpBody() {
-		return smtpBody;
+	public String getSendAlertEmailBody() {
+		return sendAlertEmailBody;
 	}
 
-	public void setSmtpBody(String smtpBody) {
-		this.smtpBody = smtpBody;
+	public void setSendAlertEmailBody(String smtpBody) {
+		this.sendAlertEmailBody = smtpBody;
 	}
 
 	public List<String> getRecipients() {
@@ -156,5 +159,39 @@ public class WatchAlertTask {
 	public void setTaskQueries(List<WatchAlertTaskQuery> taskQueries) {
 		this.taskQueries = taskQueries;
 	}
+	
+	public String getClearAlertHttpLink() {
+		return clearAlertHTTPLink;
+	}
+
+	public void setClearAlertHttpLink(String clearAlertHTTPLink) {
+		this.clearAlertHTTPLink = clearAlertHTTPLink;
+	}
+	
+	public String getClearAlertEmailBody() {
+		return clearAlertEmailBody;
+	}
+
+	public void setClearAlertEmailBody(String clearAlertEmailBody) {
+		this.clearAlertEmailBody = clearAlertEmailBody;
+	}
+	
+	public Integer getStoreActiveState() {
+		return storeActiveState;
+	}
+
+	public void setStoreActiveState(Integer storeActiveState) {
+		this.storeActiveState = storeActiveState;
+	}
+	
+	
+	public MapAlertStrings getAlertBody() {
+		return alertBody;
+	}
+
+	public void setAlertBody(MapAlertStrings previousAlertBody) {
+		this.alertBody = previousAlertBody;
+	}
+
 }
 

@@ -33,13 +33,16 @@ ACTION MAIL: each task can have only one set of email settings. All of settings 
 	watchalert.taskX.action.smtpserver	- must contain SMTP server server. It can be in two formats : hostname and hostname:port. Default port is 25.(REQUIRED)   
 	watchalert.taskX.action.smtpfrom - mail from, also used for authentication.(REQUIRED)
 	watchalert.taskX.action.smtpsubject - mail subject.(REQUIRED)
-	watchalert.taskX.action.smtpbody - mail body.(REQUIRED)
+	watchalert.taskX.action.sendalertemailbody - email body about alert. (REQUIRED)
+	watchalert.taskX.action.clearalertemailbody - email body about alert.  Will be used  when alert will have cleared. (NOT REQUIRED)
 	watchalert.taskX.action.recipients - list of recipients separated by space. Each record must be in format: prefix:email@domain. Prefix should be one of following: to, cc,  bcc.(REQUIRED)
 	watchalert.taskX.action.smtppassword - mail password. Not required. No  In case if not exists no authentication will be happened.
 		
 ACTION HTTP: sending HTTP request, method GET. Both parameters must be present.
-	watchalert.taskX.action.httplink - EMS host. Should contain POST query.(REQUIRED)
 	watchalert.taskX.action.httpbody - Contains message string. If defined, it will be replace all %MESSAGE% pattern.(REQUIRED)
+	watchalert.taskX.action.sendalerthttplink - Http link. Should contain POST query.(REQUIRED)
+	watchalert.taskX.action.clearalerthttplink - Http link. Will be used  when alert will have cleared. Should contain POST query.(NOT REQUIRED)
+	
 
 Reserved passphrases.
 	%YEAR% - in format yyyy.
@@ -53,14 +56,14 @@ Reserved passphrases.
 	%TIMESTAMP-PERIOD% - replacing by current datetime minus time defined in watchalert.taskX.period. Default format yyyy-MM-ddTHH:mm:ss.SSSZ.
 	
 	Example:
-	watchalert.elastichost: 192.168.19.174
+	watchalert.elastichost: 192.168.0.1
 	watchalert.elasticport: 9200
-	watchalert.task1.indice: '/nrx-azure-signin-%YEAR%.%MONTH%/_count?pretty'
+	watchalert.task1.indice: '/example-indice-%YEAR%.%MONTH%/_count?pretty'
 	watchalert.task1.period: 300
 	watchalert.task1.timeZoneDiff: 4
 	watchalert.task1.query1.querybody: '{"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}}}'
 	watchalert.task1.query1.fields: count
 	watchalert.task1.query1.lt: 10
-	watchalert.task1.action.httplink: 'https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4631&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%'
-	watchalert.task1.action.httpbody: Do not received any logs from CHP AD servers. Call Evghenii 929-202-1178.
+	watchalert.task1.action.sendalertemailbody: 'https://example.com/anypage.asp?parameper1=%MESSAGE%'
+	watchalert.task1.action.httpbody: Something wrong
 	 

@@ -3,12 +3,15 @@ package net.digitaledge.watchalert;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+
 /**
  * This calss is parsing config file.
  * @author esimacenco
  *
  */
-public class WatchAlertReadConfig {
+public class WatchAlertReadConfiguration {
 	
 	
 	private String elasticHost = new String("127.0.0.1");
@@ -17,15 +20,18 @@ public class WatchAlertReadConfig {
 	private Integer maxTasks = new Integer(100);
 	private WatchAlertSettings settings;
 	private List<WatchAlertTask> watchAlertTaskList = new ArrayList<WatchAlertTask>();
+	final static Logger logger = Logger.getLogger("WatchalertService");
 	
-	public WatchAlertReadConfig()
+	
+	public WatchAlertReadConfiguration()
 	{
-		settings = new WatchAlertSettings();
-		parseConfig(settings);
+		parseConfig();
 	}
 	
-	private void parseConfig(WatchAlertSettings settings)
+	private void parseConfig()
 	{
+		settings = new WatchAlertSettings();
+		
 		try{	
 			
 			if(settings.get("watchalert.elastichost") != null)
@@ -39,9 +45,7 @@ public class WatchAlertReadConfig {
 			{
 				
 				WatchAlertTask watchAlertTask = new WatchAlertTask(i);
-				if(settings.get("watchalert.task"+i+".indice") != null &&
-					//settings.get("watchalert.task"+i+".querybody") != null &&
-					settings.get("watchalert.task"+i+".period") != null){
+				if(settings.get("watchalert.task"+i+".indice") != null && settings.get("watchalert.task"+i+".period") != null){
 					
 					watchAlertTask.setIndice(settings.get("watchalert.task"+i+".indice"));
 					watchAlertTask.setPeriod(Integer.parseInt(settings.get("watchalert.task"+i+".period")));
@@ -57,42 +61,49 @@ public class WatchAlertReadConfig {
 							settings.get("watchalert.task"+i+".action.smtpfrom") != null &&
 							settings.get("watchalert.task"+i+".action.recipients") != null &&
 							settings.get("watchalert.task"+i+".action.smtpsubject") != null &&
-							settings.get("watchalert.task"+i+".action.smtpbody") != null)
+							settings.get("watchalert.task"+i+".action.sendalertemailbody") != null)
 						{
 							watchAlertTask.setEmailFlag("YES");
 							watchAlertTask.setSmtpServer(settings.get("watchalert.task"+i+".action.smtpserver"));
 							watchAlertTask.setSmtpFrom(settings.get("watchalert.task"+i+".action.smtpfrom"));
 							watchAlertTask.setRecipients(settings.get("watchalert.task"+i+".action.recipients"));
 							watchAlertTask.setSmtpSubject(settings.get("watchalert.task"+i+".action.smtpsubject"));
-							watchAlertTask.setSmtpBody(settings.get("watchalert.task"+i+".action.smtpbody"));
+							watchAlertTask.setSendAlertEmailBody(settings.get("watchalert.task"+i+".action.sendalertemailbody"));
 							if(settings.get("watchalert.task"+i+".action.smtppassword")!= null)
 								watchAlertTask.setSmtpPassword(settings.get("watchalert.task"+i+".action.smtppassword"));
+							if(settings.get("watchalert.task"+i+".action.clearalertemailbody")!= null)
+							{
+								watchAlertTask.setClearAlertEmailBody(settings.get("watchalert.task"+i+".action.clearalertemailbody"));
+								watchAlertTask.setStoreActiveState(1);
+							}
 						}
 						
-						if( settings.get("watchalert.task"+i+".action.httplink") != null &&
+						if( settings.get("watchalert.task"+i+".action.sendalerthttplink") != null &&
 							settings.get("watchalert.task"+i+".action.httpbody") != null)
 						{
-							watchAlertTask.setHttpLink(settings.get("watchalert.task"+i+".action.httplink"));
+							watchAlertTask.setSendAlertHttpLink(settings.get("watchalert.task"+i+".action.sendalerthttplink"));
 							watchAlertTask.setHttpBody(settings.get("watchalert.task"+i+".action.httpbody"));
+							if(settings.get("watchalert.task"+i+".action.clearalerthttplink")!= null)
+							{
+								watchAlertTask.setClearAlertHttpLink(settings.get("watchalert.task"+i+".action.clearalerthttplink"));
+								watchAlertTask.setStoreActiveState(1);
+							}
 						}
 					
 					//check all queries for this task 
 					for(int y = 1; y <= maxTasks; y++)
 					{
-						//boolean foundAllRequiredFields = false;
 						WatchAlertTaskQuery watchAlertTaskQuery = new WatchAlertTaskQuery();
-						
 						
 						if(settings.get("watchalert.task"+ i +".query"+ y +".querybody") != null)
 						{
-							System.out.println(settings.get("watchalert.task"+ i +".query"+ y +".querybody"));
+							logger.debug(settings.get("watchalert.task"+ i +".query"+ y +".querybody"));
 							watchAlertTaskQuery.setQuerybody(settings.get("watchalert.task"+ i +".query"+ y +".querybody"));
 						}
 						if(settings.get("watchalert.task"+ i +".query"+ y +".fields") != null)
 							watchAlertTaskQuery.setFields(settings.get("watchalert.task"+ i +".query"+ y +".fields"));
 						if(settings.get("watchalert.task"+i+".query"+ y +".procedure") != null)
 						{
-							//foundAllRequiredFields = true;
 							watchAlertTaskQuery.setCampareFlag("OTHER");
 							watchAlertTaskQuery.setProcedure(settings.get("watchalert.task"+i+".query"+ y +".procedure"));
 						}
@@ -123,25 +134,17 @@ public class WatchAlertReadConfig {
 						
 					}
 					
-					if (watchAlertTask.getEmailFlag().equals("NO") && watchAlertTask.getHttpLink().length() == 0)
-						System.out.println("No action defined for the task "+ i +". Please set up MAIL or HTTP action, see documentation");
+					if (watchAlertTask.getEmailFlag().equals("NO") && watchAlertTask.getSendAlertHttpLink().length() == 0)
+						logger.error("No action defined for the task "+ i +". Please set up EMAIL or HTTP action, see documentation.");
 					else if(watchAlertTask.getTaskQueries().size() <= 0)
-						System.out.println("No queries defined for the task "+ i +". Please set up: watchalert.task"+i+".queryX.gt or watchalert.task"+i+".queryX.lt or watchalert.task"+i+".queryX.keywords.");
+						logger.error("No queries defined for the task "+ i +". Please set up: watchalert.task"+i+".queryX.gt or watchalert.task"+i+".queryX.lt or watchalert.task"+i+".queryX.keywords.");
 					else watchAlertTaskList.add(watchAlertTask);
 					
 					printConfig(watchAlertTask, i);
-					
-						//if(foundAllRequiredFields)
-						//{
-							//System.out.println("foundAllRequiredFileds " + foundAllRequiredFields +" " + i);
-							//System.out.println("watchalert.task"+i+".period:" + settings.get("watchalert.task"+i+".period"));
-						//}
-					//else
-					//	System.out.println("No required fields found for the task "+i+". Please set up: watchalert.task"+i+".indice, watchalert.task"+i+".querybody and watchalert.task"+i+".period");
 				}			
 			}
     	} catch (Exception e) {
-    		System.out.println(e.toString());
+    		logger.error(e.toString());
 		} 	
 	}
 	/**
@@ -151,43 +154,40 @@ public class WatchAlertReadConfig {
 	private void printConfig(WatchAlertTask watchAlertTask, int index)
 	{
 		try{
-			System.out.println("---------------------START CONFIG----------------------------------------");
-			//System.out.println.info("Found task " + index);
-			System.out.println("Elastic Host: " + elasticHost);
-			System.out.println("Elastic Port: " + elasticPort);
-			System.out.println("Enable debug: " + enableDebug);
-			System.out.println("Task "+index+" httpAction: " + watchAlertTask.getHttpLink());
-			System.out.println("Task "+index+" httpBody: " + watchAlertTask.getHttpBody());
-			//System.out.println("Task Indice: " + replaceKeywords(watchAlertTask.getIndice(), watchAlertTask, null));
-			System.out.println("Task "+index+" Period: " + watchAlertTask.getPeriod());
-			System.out.println("Task "+index+" TimeZoneDiff: " + watchAlertTask.getTimeZoneDiff());
+			logger.debug("---------------------START CONFIG----------------------------------------");
+			logger.debug("Elastic Host: " + elasticHost);
+			logger.debug("Elastic Port: " + elasticPort);
+			logger.debug("Enable debug: " + enableDebug);
+			logger.debug("Task "+index+" httpAction: " + watchAlertTask.getSendAlertHttpLink());
+			logger.debug("Task "+index+" httpBody: " + watchAlertTask.getHttpBody());
+			logger.debug("Task "+index+" Period: " + watchAlertTask.getPeriod());
+			logger.debug("Task "+index+" TimeZoneDiff: " + watchAlertTask.getTimeZoneDiff());
 			int i = 1;
 			for(WatchAlertTaskQuery watchAlertTaskQuery: watchAlertTask.getTaskQueries())
 			{
-				System.out.println("Task "+index+" Query "+i+" Querybody: " + WatchAlertUtils.replaceKeywords(watchAlertTaskQuery.getQuerybody(), watchAlertTask, watchAlertTaskQuery, null));		
-				System.out.println("Task "+index+" Query "+i+" Procedure: " + watchAlertTaskQuery.getProcedure());
-				System.out.println("Task "+index+" Query "+i+" GreaterThan: " + watchAlertTaskQuery.getGreaterThan());
-				System.out.println("Task "+index+" Query "+i+" LessThan: " + watchAlertTaskQuery.getLessThan());
-				watchAlertTaskQuery.getFields().forEach(action -> System.out.println("Task "+index+" Query fields: " + action));
-				watchAlertTaskQuery.getKeywords().forEach(action -> System.out.println("Task "+index+" Query keywords: " + action));
-				watchAlertTaskQuery.getReplaceFields().forEach(action -> System.out.println("Task "+index+" Query Replace Fields: " + action.getValue() +" Pattern: " + action.getVariable()));
+				logger.debug("Task "+index+" Query "+i+" Querybody: " + WatchAlertUtils.replaceKeywords(watchAlertTaskQuery.getQuerybody(), watchAlertTask, watchAlertTaskQuery, null));		
+				logger.debug("Task "+index+" Query "+i+" Procedure: " + watchAlertTaskQuery.getProcedure());
+				logger.debug("Task "+index+" Query "+i+" GreaterThan: " + watchAlertTaskQuery.getGreaterThan());
+				logger.debug("Task "+index+" Query "+i+" LessThan: " + watchAlertTaskQuery.getLessThan());
+				watchAlertTaskQuery.getFields().forEach(action -> logger.debug("Task "+index+" Query fields: " + action));
+				watchAlertTaskQuery.getKeywords().forEach(action -> logger.debug("Task "+index+" Query keywords: " + action));
+				watchAlertTaskQuery.getReplaceFields().forEach(action -> logger.debug("Task "+index+" Query Replace Fields: " + action.getValue() +" Pattern: " + action.getVariable()));
 				i++;
 			}
 			
 			if(watchAlertTask.getEmailFlag().equals("YES"))
 			{
-				System.out.println("Task "+index+" SMTP Server: " + watchAlertTask.getSmtpServer());
-				System.out.println("Task "+index+" SMTP From: " + watchAlertTask.getSmtpFrom());
-				System.out.println("Task "+index+" SMTP Password: " + watchAlertTask.getSmtpPassword());
-				//System.out.println.info("Task recipients: " + watchAlertTask.getsm);
-				System.out.println("Task "+index+" SMTP Subject: " + watchAlertTask.getSmtpSubject());
-				System.out.println("Task "+index+" SMTP Body: " + watchAlertTask.getSmtpBody());
-				watchAlertTask.getRecipients().forEach(action -> System.out.println("Task "+index+" SMTP recipient: " + action));
+				logger.debug("Task "+index+" SMTP Server: " + watchAlertTask.getSmtpServer());
+				logger.debug("Task "+index+" SMTP From: " + watchAlertTask.getSmtpFrom());
+				logger.debug("Task "+index+" SMTP Password: " + watchAlertTask.getSmtpPassword());
+				logger.debug("Task "+index+" SMTP Subject: " + watchAlertTask.getSmtpSubject());
+				logger.debug("Task "+index+" SMTP Body: " + watchAlertTask.getSendAlertEmailBody());
+				watchAlertTask.getRecipients().forEach(action -> logger.debug("Task "+index+" SMTP recipient: " + action));
 			}
 			
-			System.out.println("-------------------END CONFIG------------------------------------------");
+			logger.debug("-------------------END CONFIG------------------------------------------");
     	} catch (Exception e) {
-    		System.out.println(e.toString());
+    		logger.error(e.toString());
 		} 
 	}
 	

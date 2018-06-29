@@ -2,6 +2,8 @@ package net.digitaledge.watchalert;
 
 import java.util.logging.Logger;
 
+import org.apache.log4j.PropertyConfigurator;
+
 public class WatchalertService  {
 
 	private Thread thread;
@@ -10,6 +12,9 @@ public class WatchalertService  {
 	
 	public static void main(String[] args)
 	{
+		String log4jConfPath = "log4j.properties";
+		PropertyConfigurator.configure(log4jConfPath);
+		
 		WatchalertService watchalertService = new WatchalertService();
 		watchalertService.doStart();
 	}
