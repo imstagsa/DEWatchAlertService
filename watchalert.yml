@@ -1,14 +1,14 @@
-watchalert.elastichost: 192.168.11.201
+watchalert.elastichost: 192.168.19.174
 watchalert.elasticport: 9200
 
-
-watchalert.task1.indice: '/auriga-fortigate-%YEAR%.%MONTH%/_count?pretty'
-watchalert.task1.period: 30
-watchalert.task1.timeZoneDiff: 4
-watchalert.task1.query1.querybody: {"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"2018-06-29T22:07:06.650Z"}}}]}}}
-watchalert.task1.query1.fields: count
-watchalert.task1.query1.lt: 10
-watchalert.task1.query1.replaceFields: 'Operations:OPERATION TargetUserOrGroupName:MEMBERS UserId:USERID AuditData:MESSAGE ObjectId:OBJECTID'
-watchalert.task1.action.httpbody: No logs have been received from Kanematsu PaloAlto device for last 5 minutes. Call Evghenii 929-202-1178.
-watchalert.task1.action.clearalerthttplink: 'https://ems.digitaledge.net/service4/RemoveAlert.asp?DeviceID=4631&AlertType=Critical&AlertMessage=%MESSAGE%'
-watchalert.task1.action.sendalerthttplink: 'https://ems.digitaledge.net/service4/ReportAlert.asp?DeviceId=4693&AllowDelete=1&IsCritical=0&AlertType=Critical&AlertMessage=%MESSAGE%'
+watchalert.task34.indice: '/nrx-azure-eventhub-%YEAR%.%MONTH%/_count?pretty'
+watchalert.task34.period: 10
+watchalert.task34.timeZoneDiff: 4
+watchalert.task34.query1.querybody: '{"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"%TIMESTAMP-PERIOD%"}}}]}}}'
+watchalert.task34.query1.fields: count
+watchalert.task34.query1.lt: 10
+watchalert.task34.action.smtpserver: mailout.numerix.com:25
+watchalert.task34.action.smtpfrom: NumerixAD-admin-change@numerix.com
+watchalert.task34.action.recipients: to:esimacenco@digitaledge.net
+watchalert.task34.action.smtpsubject: Did not received any logs from Numerix Azure EventHub server for last 1 hour.
+watchalert.task34.action.sendalertemailbody: 'Did not received any logs from Numerix Azure EventHub server for last 1 hour.'

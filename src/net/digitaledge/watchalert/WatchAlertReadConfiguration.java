@@ -40,7 +40,7 @@ public class WatchAlertReadConfiguration {
 				elasticPort = settings.get("watchalert.elasticport");
 			if(settings.get("watchalert.enabledebug") != null)
 				enableDebug = settings.get("watchalert.enabledebug");
-			//check configured tasks in config file
+			//checking configured tasks in config file
 			for(int i = 1; i <= maxTasks; i++)
 			{
 				
@@ -56,13 +56,12 @@ public class WatchAlertReadConfiguration {
 					if(settings.get("watchalert.task"+i+".timeZoneDiff") != null )
 						watchAlertTask.setTimeZoneDiff(Integer.parseInt(settings.get("watchalert.task"+i+".timeZoneDiff")));
 					
-					if(
-							settings.get("watchalert.task"+i+".action.smtpserver") != null &&
-							settings.get("watchalert.task"+i+".action.smtpfrom") != null &&
-							settings.get("watchalert.task"+i+".action.recipients") != null &&
-							settings.get("watchalert.task"+i+".action.smtpsubject") != null &&
-							settings.get("watchalert.task"+i+".action.sendalertemailbody") != null)
-						{
+					if(settings.get("watchalert.task"+i+".action.smtpserver") != null &&
+					   settings.get("watchalert.task"+i+".action.smtpfrom") != null &&
+					   settings.get("watchalert.task"+i+".action.recipients") != null &&
+					   settings.get("watchalert.task"+i+".action.smtpsubject") != null &&
+					   settings.get("watchalert.task"+i+".action.sendalertemailbody") != null)
+					   {
 							watchAlertTask.setEmailFlag("YES");
 							watchAlertTask.setSmtpServer(settings.get("watchalert.task"+i+".action.smtpserver"));
 							watchAlertTask.setSmtpFrom(settings.get("watchalert.task"+i+".action.smtpfrom"));
@@ -131,7 +130,6 @@ public class WatchAlertReadConfiguration {
 						
 						if(watchAlertTaskQuery.getQuerybody().length() > 0)
 							watchAlertTask.getTaskQueries().add(watchAlertTaskQuery);
-						
 					}
 					
 					if (watchAlertTask.getEmailFlag().equals("NO") && watchAlertTask.getSendAlertHttpLink().length() == 0)
@@ -153,8 +151,9 @@ public class WatchAlertReadConfiguration {
 	 */
 	private void printConfig(WatchAlertTask watchAlertTask, int index)
 	{
+		
 		try{
-			logger.debug("---------------------START CONFIG----------------------------------------");
+			logger.debug("---------------------START CONFIG TASK " + index +"----------------------------------------");
 			logger.debug("Elastic Host: " + elasticHost);
 			logger.debug("Elastic Port: " + elasticPort);
 			logger.debug("Enable debug: " + enableDebug);
@@ -175,17 +174,14 @@ public class WatchAlertReadConfiguration {
 				i++;
 			}
 			
-			if(watchAlertTask.getEmailFlag().equals("YES"))
-			{
-				logger.debug("Task "+index+" SMTP Server: " + watchAlertTask.getSmtpServer());
-				logger.debug("Task "+index+" SMTP From: " + watchAlertTask.getSmtpFrom());
-				logger.debug("Task "+index+" SMTP Password: " + watchAlertTask.getSmtpPassword());
-				logger.debug("Task "+index+" SMTP Subject: " + watchAlertTask.getSmtpSubject());
-				logger.debug("Task "+index+" SMTP Body: " + watchAlertTask.getSendAlertEmailBody());
-				watchAlertTask.getRecipients().forEach(action -> logger.debug("Task "+index+" SMTP recipient: " + action));
-			}
+			logger.debug("Task "+index+" SMTP Server: " + watchAlertTask.getSmtpServer());
+			logger.debug("Task "+index+" SMTP From: " + watchAlertTask.getSmtpFrom());
+			logger.debug("Task "+index+" SMTP Password: " + watchAlertTask.getSmtpPassword());
+			logger.debug("Task "+index+" SMTP Subject: " + watchAlertTask.getSmtpSubject());
+			logger.debug("Task "+index+" SMTP Body: " + watchAlertTask.getSendAlertEmailBody());
+			watchAlertTask.getRecipients().forEach(action -> logger.debug("Task "+index+" SMTP recipient: " + action));
 			
-			logger.debug("-------------------END CONFIG------------------------------------------");
+			logger.debug("-------------------END CONFIG TASK " + index +"------------------------------------------");
     	} catch (Exception e) {
     		logger.error(e.toString());
 		} 

@@ -182,7 +182,6 @@ public class WatchAlertsWorker implements Runnable {
 						mapsForDeletion.add(mapAlertStrings);
 				}
 			}
-			
 			for(MapAlertStrings mapAlertStrings : mapsForDeletion)
 				taskNodes.remove(mapAlertStrings);
 		}
@@ -202,7 +201,10 @@ public class WatchAlertsWorker implements Runnable {
 		else
 			urlParameters = WatchAlertUtils.replaceKeywords(watchAlertTaskQuery.getQuerybody(), watchAlertTask, watchAlertTaskQuery, taskNode.getAlertMapStrings());
 	    	
-        StringBuilder stringBuilder = new StringBuilder("http://"+watchAlertConfig.getElasticHost()+":" + watchAlertConfig.getElasticPort() + WatchAlertUtils.replaceKeywords(watchAlertTask.getIndice(), watchAlertTask, watchAlertTaskQuery, null));
+        StringBuilder stringBuilder = new StringBuilder("http://"+watchAlertConfig.getElasticHost()+":" + watchAlertConfig.getElasticPort() +"/"+ WatchAlertUtils.replaceKeywords(watchAlertTask.getIndice(), watchAlertTask, watchAlertTaskQuery, null));
+        
+        System.out.println("stringBuilder : " + stringBuilder.toString());
+        
         StringBuffer response = new StringBuffer();
         try{
         	URL obj = new URL(stringBuilder.toString());
@@ -254,7 +256,6 @@ public class WatchAlertsWorker implements Runnable {
 				if(watchAlertTask.getNextExecuteTime() <= now)
 				{
 					logger.info("Executing getNewLogs for TASK: " + watchAlertTask.getTaskNumber());
-					
 					parseJSON(watchAlertTask);
 					watchAlertTask.setNextExecuteTime(WatchAlertUtils.getEpochTime() + watchAlertTask.getPeriod());
 				}

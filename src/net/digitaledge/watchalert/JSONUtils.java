@@ -61,11 +61,11 @@ public class JSONUtils {
     public static List<MapVariableValue> convertToMapVariableValue(JSONObject jsonObject)
     {
     	List<MapVariableValue> listOfObjects = new ArrayList<MapVariableValue>();
-    	convertJSONObject(jsonObject, listOfObjects);
+    	convertJSONObject(jsonObject, listOfObjects, "");
     	return listOfObjects;
     }
     
-    private static void convertJSONObject(JSONObject jsonObject, List<MapVariableValue> listOfObjects)
+/*    private static void convertJSONObject(JSONObject jsonObject, List<MapVariableValue> listOfObjects)
     {
     
     	try {
@@ -109,7 +109,81 @@ public class JSONUtils {
      } catch (Exception e) {
          e.printStackTrace();
      }
-    }
+    }*/
+    
+    /**
+     * Added support multiname fields, separated by dot. Example: name1.name2.name3
+     * @param jsonObject
+     * @param listOfObjects
+     * @param parentFieldName 
+     */
+    private static void convertJSONObject(JSONObject jsonObject, List<MapVariableValue> listOfObjects, String parentFieldName)
+    {
+    	try {
+    	 for (Object key : jsonObject.keySet()) {
+
+             String keyStr = (String)key;
+             Object keyvalue = jsonObject.get(keyStr);
+             
+             if(keyvalue != null)
+             {
+				switch (keyvalue.getClass().toString()) {
+					case "class org.json.simple.JSONArray":
+					{
+						 listOfObjects.add(new MapVariableValue(keyStr, ""));
+	            		 convertJsonArray((JSONArray)keyvalue, listOfObjects, keyStr);
+					}
+             		break;
+					case "class org.json.simple.JSONObject":
+					{
+			            if(keyStr.equals("_source"))
+			            {
+			            	listOfObjects.add(new MapVariableValue(keyStr, ""));
+			            	convertJSONObject((JSONObject)keyvalue, listOfObjects, "");
+			            }
+			            else
+			            {
+			            	listOfObjects.add(new MapVariableValue(keyStr, ""));
+			            	convertJSONObject((JSONObject)keyvalue, listOfObjects, parentFieldName+keyStr+".");
+			            }
+					}
+                 	break;
+					case "class java.lang.String":
+					{
+						 if(keyStr != null && parentFieldName != null)
+	            			 listOfObjects.add(new MapVariableValue(parentFieldName + keyStr, (String) keyvalue));
+					}
+					default: 
+					{
+						if(keyStr != null && parentFieldName != null)
+	            			 listOfObjects.add(new MapVariableValue(parentFieldName + keyStr, keyvalue.toString()));
+					}
+    				break;
+				}
+            	 
+             }
+         }
+     } catch (Exception e) {
+         e.printStackTrace();
+     }
+    } 
+    
+	private static void convertJsonArray(JSONArray jsonArray, List<MapVariableValue> listOfObjects, String parentFieldName) {
+		try {
+			int arraySize = jsonArray.size();
+			for (int i = 0; i < arraySize; i++) {
+
+				Object keyvalue = jsonArray.get(i);
+
+				if (keyvalue instanceof JSONArray)
+					convertJsonArray((JSONArray) keyvalue, listOfObjects, parentFieldName);
+				else if (keyvalue instanceof JSONObject)
+					convertJSONObject((JSONObject) keyvalue, listOfObjects, parentFieldName + ".");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
     
     public static List<JSONObject> findArrayObject(JSONObject jsonObject, String objectName)
     {

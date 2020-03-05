@@ -18,7 +18,7 @@
         	<classpath>
         		<path id="javamail" location="lib/javax.mail-1.5.1.jar"/>
         		<path id="activation" location="lib/activation-1.1.jar"/>
-        		<path id="activation" location="lib/json-simple-1.1.jar"/>
+        		<path id="json-simple" location="lib/json-simple-1.1.jar"/>
         		<path id="log4j" location="lib/log4j-1.2.17.jar"/>
     		</classpath>
     	</javac>	

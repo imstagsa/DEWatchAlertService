@@ -127,11 +127,18 @@ public class WatchAlertInformer {
 			msg.setFrom(new InternetAddress(watchAlertTask.getSmtpFrom()));
 			msg.setSubject(watchAlertTask.getSmtpSubject());
 			msg.setText(alertEmailBody, "utf-8", "html");
-			Transport transport = session.getTransport();
-			transport.connect();
-			transport.sendMessage(msg, msg.getAllRecipients());
-			transport.close();
-			logger.info("AFTER SENDING EMAIL");
+			//TODO Sometime service sending second email with empty body. Will investigate.  
+			if(alertEmailBody.length() > 0)
+			{
+				Transport transport = session.getTransport();
+				transport.connect();
+				transport.sendMessage(msg, msg.getAllRecipients());
+				transport.close();
+				logger.debug("Sent EMAIL TASK: " + watchAlertTask.getTaskNumber()+" with Subject: " + watchAlertTask.getSmtpSubject() +" and with body: " + alertEmailBody);
+			}
+			else
+				logger.debug("Found EMAIL with empty body " + watchAlertTask.getTaskNumber()+" with Subject: " + watchAlertTask.getSmtpSubject() +" and with body: " + alertEmailBody);
+			
 		}catch (MessagingException mex) {
 			logger.error(mex.toString());
 		}
@@ -210,7 +217,7 @@ public class WatchAlertInformer {
         	msg.saveChanges();
         	trans.sendMessage(msg, msg.getAllRecipients());
         	trans.close();
-        	logger.info("Email successfully sent.");
+        	logger.info("Sent EMAIL TASK: " + watchAlertTask.getTaskNumber()+" with Subject: " + watchAlertTask.getSmtpSubject() +" and with body: " + alertEmailBody);
         }
         catch (MessagingException mex) {
         	logger.error(mex.toString());
